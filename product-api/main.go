@@ -8,17 +8,18 @@ import (
 	"time"
 
 	"golang.org/x/net/context"
-	"sbrockmann.com/working/handlers"
+	"sbrockmann.com/product-api/handlers"
 )
 
 func main(){
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
-	hh := handlers.NewHello(l)
-	gh := handlers.NewGoodbye(l)
+	
+	ph := handlers.NewProducts(l)
 
 	sm := http.NewServeMux()
-	sm.Handle("/", hh)
-	sm.Handle("/goodbye", gh)
+
+	sm.Handle("/", ph)
+
 
 	s := &http.Server{
 		Addr: ":9006",

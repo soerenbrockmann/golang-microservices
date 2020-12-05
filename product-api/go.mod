@@ -1,4 +1,4 @@
-module sbrockmann.com/working
+module sbrockmann.com/product-api
 
 go 1.15
 
