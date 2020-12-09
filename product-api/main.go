@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gorilla/mux"
 	"golang.org/x/net/context"
 	"sbrockmann.com/product-api/handlers"
 )
@@ -16,9 +17,21 @@ func main(){
 	
 	ph := handlers.NewProducts(l)
 
-	sm := http.NewServeMux()
+	// sm := http.NewServeMux()
+	sm := mux.NewRouter()
 
-	sm.Handle("/", ph)
+	getRouter := sm.Methods("GET").Subrouter()
+	getRouter.HandleFunc("/", ph.GetProducts)
+
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	putRouter.HandleFunc("/{id:[0-9]+}", ph.UpdateProducts)
+	putRouter.Use(ph.MiddlewareValidateProduct)
+
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/", ph.AddProduct)
+	postRouter.Use(ph.MiddlewareValidateProduct)
+
+	// sm.Handle("/products", ph)
 
 
 	s := &http.Server{
